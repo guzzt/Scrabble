@@ -1,26 +1,37 @@
 # -*- coding: utf8 -*-
 import numpy   as np
 from Square    import Square
-from letterbag import letterbag
+from letterbag import LetterBag
 
 global TP; 
 global TL;
 global DL;
 global DP;
 global ST;
+global TL_FACTOR;
+global DL_FACTOR;
+global TP_FACTOR;
+global DP_FACTOR;
+global ST_FACTOR;
+global HORIZONTAL;
+global VERTICAL;
 
-TP = 10;
-TL = 11;
-DL = 12;
-DP = 13;
-ST = 14;
+TP = 100;
+TL = 110;
+DL = 120;
+DP = 130;
+ST = 140;
+TL_FACTOR  = TP_FACTOR = 3; 
+DP_FACTOR  = DL_FACTOR = ST_FACTOR = 2;
+HORIZONTAL = 'h';
+VERTICAL   = 'v';
 
 class Board(object):
 	""""""
 	def __init__(self,dimension=15):
 		self.dimension = dimension;
 		self.matrix    = np.array([Square() for i in xrange(self.dimension*self.dimension)]).reshape(self.dimension,self.dimension);
-
+		self.letterbag = LetterBag();
 	def LoadSquares(self):
 		self.matrix[0,0].atribute   = TP;
 		self.matrix[0,3].atribute   = DL;
@@ -87,18 +98,25 @@ class Board(object):
 	def isValid(self,letter,coord_y,coord_x):
 		if (coord_y < 0) or (coord_y > 14) or (coord_x < 0) or (coord_x > 14):
 			return False;
-		elif self.matrix[coord_y,coord_x] == None:
+		elif self.matrix[coord_y,coord_x].letter == None:
 			return True;
-		elif self.matrix[coord_y,coord_x] == letter:
+		elif self.matrix[coord_y,coord_x].letter == letter:
 			return True;
-		else
+		else:
 			return False;
 
 	def CalculePoints(self,char,coord_y,coord_x):
-		#Calcular atributos ...
-		#...
-
-		points += letterbag.GetLetterValue(l);
+		#Calcula atributos 
+		if self.matrix[coord_y,coord_x].atribute == None:
+			points = self.letterbag.GetLetterValue(char);
+		elif self.matrix[coord_y,coord_x].atribute == TL:
+			points = self.letterbag.GetLetterValue(char,TL_FACTOR);
+		elif self.matrix[coord_y,coord_x].atribute == DL:
+			points = self.letterbag.GetLetterValue(char,TL_FACTOR);
+		elif self.matrix[coord_y,coord_x].atribute == TP:
+			points = TP;
+		else:
+			points = DP;
 		return points;
 
 def main():
