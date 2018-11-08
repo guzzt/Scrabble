@@ -7,22 +7,27 @@ NUM_LETTERS_PLAYER = 7;
 class LetterBag(object):
 	"""Saco de letras """
 	def __init__(self):
-		self.bag = ['a']*14 + ['e']*11 + ['i']*10 + ['o']*10 + ['s']*8 + ['u']*7 + ['m']*6 + ['r']*6 + ['t']*5 \
-				 + ['d']*5  + ['l']*5  + ['c']*4  + ['p']*4  + ['n']*4 + ['b']*3 + ['ç']*2 + ['f']*2 + ['g']*2 \
-				 + ['h']*2  + ['v']*2  + ['j']*2  + ['q']    + ['x']   + ['z']   + [' ']*3;
+		self.__bag = ['a']*14 + ['e']*11 + ['i']*10 + ['o']*10 + ['s']*8 + ['u']*7 + ['m']*6 + ['r']*6 + ['t']*5 \
+				   + ['d']*5  + ['l']*5  + ['c']*4  + ['p']*4  + ['n']*4 + ['b']*3 + ['ç']*2 + ['f']*2 + ['g']*2 \
+				   + ['h']*2  + ['v']*2  + ['j']*2  + ['q']    + ['x']   + ['z']   + [' ']*3;
+	@property
+	def bag(self):
+		return self.__bag;
+        
+	@bag.setter
+	def bag(self,value):
+		self.__bag = value;
 
 	def PlayerLetters(self,num=NUM_LETTERS_PLAYER):
-		random.shuffle(self.bag);
-		len(len(self.bag));
 		letters = random.sample(self.bag,num);
 		for letter in letters:
 			self.bag.remove(letter);
 			
 	def GetLetterValue(self,c,factor=1):
 		if c == ' ':
-			return 0*factor;
+			return 0;
 		elif((c == 'a') or (c == 'e') or (c == 'i') or (c == 'o') or (c == 'u') or (c == 's') or (c == 'm') or (c == 'r') or (c == 't')):
-			return 1*factor;
+			return factor;
 		elif((c == 'd') or (c == 'l') or (c == 'p') or (c == 'c')):
 			return 2*factor;
 		elif((c == 'n') or (c == 'b') or (c == 'ç')):

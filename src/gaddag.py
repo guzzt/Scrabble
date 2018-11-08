@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 class StateGaddag(object):
     def __init__(self):
-        self.__edges   = {}; #transicoes que levam aos proximos estados
+        self.__edges   = dict(); #transicoes que levam aos proximos estados
         self.__letters = set(); #Cada estado é composto por um conjunto de letras, esse conjunto indica as letras que levam a uma possivel palavra valida 
 
     @property

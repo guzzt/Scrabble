@@ -29,9 +29,43 @@ VERTICAL   = 'v';
 class Board(object):
 	""""""
 	def __init__(self,dimension=15):
-		self.dimension = dimension;
-		self.matrix    = np.array([Square() for i in xrange(self.dimension*self.dimension)]).reshape(self.dimension,self.dimension);
-		self.letterbag = LetterBag();
+		self.__dimension = dimension;
+		self.__matrix    = np.array([Square() for i in xrange(self.dimension*self.dimension)]).reshape(self.dimension,self.dimension);
+		self.__letterbag = LetterBag();
+		self.__words     = [];
+
+	@property
+	def dimension(self):
+		return self.__dimension;
+        
+	@dimension.setter
+	def dimension(self,value):
+		self.__dimension = value;
+
+	@property
+	def matrix(self):
+		return self.__matrix;
+        
+	@matrix.setter
+	def matrix(self,value):
+		self.__matrix = value;
+
+	@property
+	def letterbag(self):
+		return self.__letterbag;
+        
+	@letterbag.setter
+	def letterbag(self,value):
+		self.__letterbag = value;
+
+	@property
+	def words(self):
+		return self.__words;
+        
+	@words.setter
+	def words(self,value):
+		self.__words = value;
+
 	def LoadSquares(self):
 		self.matrix[0,0].atribute   = TP;
 		self.matrix[0,3].atribute   = DL;

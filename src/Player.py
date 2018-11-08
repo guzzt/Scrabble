@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 import Board;
 from   Word  import Word;
+
 class Player(object):
 	def __init__(self,name='Player'):
 		self.__rack  = [];
@@ -49,22 +50,33 @@ class Player(object):
 	def board(self,value):
 		self.__board = value;
 
-	def Move(self,letter,row,col):
-		if self.board.isValid(letter,row,col):
-			self.board.matrix[row,col].letter = letter; 
-			return True;
+	def isValidMove(self,word,row,col,direction):
+		if(len(self.board.words) == 0):
+			Valid = False;
+		if direction == Board.VERTICAL:
+			for letter in word:
+				if((not Valid) and ((row,col) == (7,7))):
+					Valid = True;
+				if not self.board.isValid(letter,row,col): 
+					return False;
+				row += 1
 		else:
-			return False;
+			for letter in word:
+				if((not Valid) and ((row,col) == (7,7))):
+					Valid = True;
+				if not self.board.isValid(letter,row,col): 
+					return False;
+				col += 1
+
+		return Valid;
+
 
 	def gamble(self,word,coord_y,coord_x,direction):
+
+		"""TODO verificar se todos os movimentos são validos antes de adicionar uma palavra"""
+
 		y  = int(coord_y,16);
 		x  = int(coord_x,16);
-
-		#Verifica se é horizontal ou vertical
-		if direction == Board.VERTICAL:
-			per_line = False;
-		else:
-			per_line = True;
 
 		#Verifica se o tamanho da palavra cabe no tabuleiro a partir das coordenadas informadas
 		if per_line:
@@ -75,16 +87,17 @@ class Player(object):
 				return False;
 
 		#Verifica se a insercão é valida, calcula os pontos de cada letra
+		if not isValidMove(word,coord_y,coord_x,direction):
+			return False;
+			
 		w = Word(word);
 		for l in word:
-			if per_line:
-				if not self.Move(l,y,x):
-					return False;
+			if direction == Board.HORIZONTAL:
+				self.board[y,x].letter = l;
 				points = self.board.CalculePoints(l,y,x);
 				x += 1;
 			else:
-				if not self.Move(l,y,x):
-					return False;
+				self.board[y,x].letter = l;
 				points = self.board.CalculePoints(l,y,x);
 				y += 1;
 			
@@ -97,7 +110,7 @@ class Player(object):
 			else:
 				w.score += points;
 
-		#calcula os pontos da palavra multiplicado pelos fatores
+
 		for f in w.factors:
 			w.score *= f;
 
@@ -106,11 +119,13 @@ class Player(object):
 
 		return True;
 
+
 def printBoard(p1):
 	for i in xrange(14):
 		for j in xrange(14):
 			print p1.board.matrix[i,j].letter, 
 		print
+
 def main():
 	b  = Board.Board();
 	b.LoadSquares()
@@ -119,5 +134,6 @@ def main():
 	p1.gamble('teste',"0","0",'v')
 	printBoard(p1);
 	print p1.score
+	
 if __name__ == '__main__':
 	main()
