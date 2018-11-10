@@ -1,5 +1,7 @@
+# -*- coding: utf8 -*-
 import Board
 from   Player import Player
+from   AI import StrategyMoveGeneration
 
 class Iface(object):
 	"""docstring for Iface"""
@@ -73,16 +75,5 @@ class Iface(object):
 	def MensageError(self,msg):
 		print '   [-]'+msg;
 
-def main():
-	b = Board.Board()
-	b.LoadSquares()
-	p1 = Player();
-	p2 = Player();
-	iface = Iface(player1=p1,player2=p2);
-	iface.board = p1.board = p2.board = b;
-	p1.gamble('teste',"0","0",'v');
-	p2.gamble('oi','0','1','v');	
-	p1.gamble('testsdmh',"1","6",'v');
-	iface.Draw()
 if __name__ == '__main__':
 	main()

@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 class StateGaddag(object):
     def __init__(self):
-        self.__edges   = dict(); #transicoes que levam aos proximos estados
+        self.__edges   = {}; #transicoes que levam aos proximos estados
         self.__letters = set(); #Cada estado é composto por um conjunto de letras, esse conjunto indica as letras que levam a uma possivel palavra valida 
 
     @property
@@ -43,7 +43,7 @@ class StateGaddag(object):
 
     def force_edge(self,char,state):
         """Adiciona uma transicao do estado atual com char para o estado "forçado"
-           levantando uma exceção se um arco para char já existir para qualquer outro estado."""
+           levantando uma exceção se um arco para char já existir para o outro estado."""
         if char in self.edges:
             if not self.edges[char] == state:
                 raise Exception('A transição com o caractere forçado já existe');
@@ -73,7 +73,7 @@ class GADDAG(object):
     def add_word(self,word):
         """Adiciona uma palavra ao GADDAG"""
         word_len = len(word);
-        if(word_len < 2):
+        if(word_len <= 2):
             raise Exception('Palavra muito pequena '+word);
 
         #print(word)
@@ -82,17 +82,18 @@ class GADDAG(object):
             state = state.add_edge(word[i]);
         state.add_final_edge(word[1],word[0]);
 
+        state = self.root;
         for i in xrange(word_len-2,-1,-1): #Cria um caminho a partir da penultima letra
             state = state.add_edge(word[i])
         state.add_final_edge('@',word[-1])
 
-        for i in xrange(word_len-3,-1,-1): #Cria os caminhos restantes
+        for i in xrange(word_len-3,-1,-1): #Cria os caminhos restantes, minimizando
             forced_state = state;
             state        = self.root;
             for j in xrange(i,-1,-1):
-                state.add_edge(word[i]);
+                state.add_edge(word[j]);
             state.add_edge('@');
-            state.add_final_edge(word[i+1],forced_state);
+            state.force_edge(word[i+1],forced_state);
 
     def has_word(self,word):
         """Verifica a existencia de determinada palavra"""
@@ -125,7 +126,10 @@ def gaddag_from_wordlist(path_file):
         for word in f.readlines():
             stripped = word.rstrip()
             if len(stripped) > 1:
-                gaddag.add_word(stripped)  # Chop the newline
+                try:
+                    gaddag.add_word(stripped)  # Chop the newline
+                except Exception as e:
+                   continue;
     return gaddag
 
 def compress_file(path_file):
@@ -137,9 +141,9 @@ def decompress_file(path_file):
 
 def main():
     g = GADDAG();
-    g = gaddag_from_wordlist('../dict.txt')
+    g = gaddag_from_wordlist('../novo.txt')
     print(g.has_word('abaixem'))
-
+    print(g.words_with_prefix('a'))
 if __name__ == '__main__':
     main()
 		

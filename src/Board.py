@@ -130,11 +130,32 @@ class Board(object):
 		self.matrix[14,14].atribute = TP;		
 
 	def isValid(self,letter,coord_y,coord_x):
-		if (coord_y < 0) or (coord_y > 14) or (coord_x < 0) or (coord_x > 14):
+		if ((coord_y < 0) or (coord_y > 14)) or ((coord_x < 0) or (coord_x > 14)):
 			return False;
 		elif self.matrix[coord_y,coord_x].letter == None:
 			return True;
 		elif self.matrix[coord_y,coord_x].letter == letter:
+			return True;
+		else:
+			return False;
+
+	def Anchors(self,coord_y,coord_x,direction):
+		if(direction == HORIZONTAL):
+			return self.matrix[coord_y];
+		else:
+			return self.matrix[0:,coord_x]
+			
+	def isHook(self,row,col):
+		
+		if(self.matrix[row,col].letter != None):
+			return True;
+		elif((row != 0) and (self.matrix[row-1,col].letter != None)):
+			return True;
+		elif((row != 14) and (self.matrix[row+1,col].letter != None)):
+			return True;
+		elif((col != 0) and (self.matrix[row,col-1].letter != None)):
+			return True;
+		elif((col != 14) and (self.matrix[row,col+1].letter != None)):
 			return True;
 		else:
 			return False;

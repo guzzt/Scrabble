@@ -53,20 +53,36 @@ class Player(object):
 	def isValidMove(self,word,row,col,direction):
 		if(len(self.board.words) == 0):
 			Valid = False;
-		if direction == Board.VERTICAL:
-			for letter in word:
-				if((not Valid) and ((row,col) == (7,7))):
-					Valid = True;
-				if not self.board.isValid(letter,row,col): 
-					return False;
-				row += 1
+			if direction == Board.VERTICAL:
+				for letter in word:
+					if((not Valid) and (self.board.matrix[row,col].atribute == Board.ST)):
+						Valid = True;
+					if not self.board.isValid(letter,row,col): 
+						return False;
+					row += 1;
+			else:
+				for letter in word:
+					if((not Valid) and (self.board.matrix[row,col].atribute == Board.ST)):
+						Valid = True;
+					if not self.board.isValid(letter,row,col): 
+						return False;
+					col += 1;
 		else:
-			for letter in word:
-				if((not Valid) and ((row,col) == (7,7))):
-					Valid = True;
-				if not self.board.isValid(letter,row,col): 
-					return False;
-				col += 1
+			Valid = False;
+			if direction == Board.VERTICAL:
+				for letter in word:
+					if((not Valid) and (self.board.isHook(row,col))):
+						Valid = True;
+					if not self.board.isValid(letter,row,col): 
+						return False;
+					row += 1;
+			else:
+				for letter in word:
+					if((not Valid) and (self.board.isHook(row,col))):
+						Valid = True;
+					if not self.board.isValid(letter,row,col): 
+						return False;
+					col += 1;
 
 		return Valid;
 
@@ -74,12 +90,11 @@ class Player(object):
 	def gamble(self,word,coord_y,coord_x,direction):
 
 		"""TODO verificar se todos os movimentos são validos antes de adicionar uma palavra"""
-
 		y  = int(coord_y,16);
 		x  = int(coord_x,16);
 
 		#Verifica se o tamanho da palavra cabe no tabuleiro a partir das coordenadas informadas
-		if per_line:
+		if Board.HORIZONTAL:
 			if x + len(word) > 14:
 				return False;
 		else:
@@ -87,17 +102,17 @@ class Player(object):
 				return False;
 
 		#Verifica se a insercão é valida, calcula os pontos de cada letra
-		if not isValidMove(word,coord_y,coord_x,direction):
+		if not self.isValidMove(word,y,x,direction):
 			return False;
 			
 		w = Word(word);
 		for l in word:
 			if direction == Board.HORIZONTAL:
-				self.board[y,x].letter = l;
+				self.board.matrix[y,x].letter = l;
 				points = self.board.CalculePoints(l,y,x);
 				x += 1;
 			else:
-				self.board[y,x].letter = l;
+				self.board.matrix[y,x].letter = l;
 				points = self.board.CalculePoints(l,y,x);
 				y += 1;
 			
@@ -116,22 +131,15 @@ class Player(object):
 
 		self.words.append(w);
 		self.score += w.score; 
-
+		self.board.words.append(w);
 		return True;
-
-
-def printBoard(p1):
-	for i in xrange(14):
-		for j in xrange(14):
-			print p1.board.matrix[i,j].letter, 
-		print
 
 def main():
 	b  = Board.Board();
 	b.LoadSquares()
 	p1 = Player();
 	p1.board = b;
-	p1.gamble('teste',"0","0",'v')
+	p1.gamble('teste',"7","7",'h')
 	printBoard(p1);
 	print p1.score
 	
